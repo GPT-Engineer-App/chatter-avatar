@@ -1,6 +1,7 @@
 import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ChatHistoryModal from "../components/ChatHistoryModal";
 
 const Index = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,9 +39,10 @@ const Index = () => {
     }
   };
 
+  const [isChatHistoryModalOpen, setChatHistoryModalOpen] = useState(false);
+
   const handleOpenHistory = () => {
-    // TODO: Implement chat history retrieval logic here
-    onOpen();
+    setChatHistoryModalOpen(true);
   };
 
   return (
@@ -96,19 +98,7 @@ const Index = () => {
       </HStack>
 
       {/* Chat History Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Chat History</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{/* Chat history list */}</ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} />
     </VStack>
   );
 };
