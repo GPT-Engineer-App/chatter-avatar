@@ -1,5 +1,5 @@
-import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text } from "@chakra-ui/react";
-import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
+import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text, Textarea } from "@chakra-ui/react";
+import { FaMicrophone, FaRobot, FaPlusCircle } from "react-icons/fa";
 import { useState, useRef } from "react";
 
 const Index = () => {
@@ -7,6 +7,8 @@ const Index = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isPersonaModalOpen, onOpen: onPersonaModalOpen, onClose: onPersonaModalClose } = useDisclosure();
+  const [personaInstructions, setPersonaInstructions] = useState("");
   const [savedChats, setSavedChats] = useState([]);
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
@@ -83,7 +85,7 @@ const Index = () => {
             {avatarFile && (avatarFile.type.startsWith("image/") ? <img src={URL.createObjectURL(avatarFile)} alt="Avatar" style={{ maxWidth: "100%", maxHeight: "100%" }} /> : <video src={URL.createObjectURL(avatarFile)} alt="Avatar" style={{ maxWidth: "100%", maxHeight: "100%" }} autoPlay loop />)}
           </Box>
           <HStack w="100%" justifyContent="space-between">
-            <Button w="32%">
+            <Button w="32%" onClick={onPersonaModalOpen}>
               <FaRobot />
             </Button>
             <Button w="32%">
@@ -107,7 +109,24 @@ const Index = () => {
         </VStack>
       </HStack>
 
-      {/* Chat History Modal */}
+      {/* Persona Instructions Modal */}
+      <Modal isOpen={isPersonaModalOpen} onClose={onPersonaModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Chatbot Persona Instructions</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Textarea placeholder="Enter the chatbot's persona instructions here..." value={personaInstructions} onChange={(e) => setPersonaInstructions(e.target.value)} />
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onPersonaModalClose}>
+              Save Instructions
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
