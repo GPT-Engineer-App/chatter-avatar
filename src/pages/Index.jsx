@@ -1,9 +1,9 @@
-import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
+import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
-import { useState, useRef } from "react";
-import ChatHistoryModal from "../components/ChatHistoryModal";
+import { useState } from "react";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
@@ -39,13 +39,9 @@ const Index = () => {
     }
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isChatHistoryModalOpen, setChatHistoryModalOpen] = useState(false);
-  const mockSavedChats = ["Chat_2024-03-10_12-00-00.txt", "Chat_2024-03-10_14-00-00.txt", "Chat_2024-03-10_16-00-00.txt"];
-  const filteredChats = searchTerm ? mockSavedChats.filter((chat) => chat.toLowerCase().includes(searchTerm.toLowerCase())) : mockSavedChats;
-
   const handleOpenHistory = () => {
-    setChatHistoryModalOpen(true);
+    // TODO: Implement chat history retrieval logic here
+    onOpen();
   };
 
   return (
@@ -101,7 +97,23 @@ const Index = () => {
       </HStack>
 
       {/* Chat History Modal */}
-      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} chatHistoryList={filteredChats} searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Chat History</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input placeholder="Search saved chats..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            {}
+            <Box mt="4">{searchQuery === "" ? <Text>Type above to search saved chats</Text> : <Text>Search results for "{searchQuery}"</Text>}</Box>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </VStack>
   );
 };
