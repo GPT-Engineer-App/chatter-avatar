@@ -1,4 +1,4 @@
-import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Textarea } from "@chakra-ui/react";
+import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
 import { useState } from "react";
 
@@ -15,9 +15,27 @@ const Index = () => {
     }
   };
 
+  const toast = useToast();
+
   const handleSaveChat = () => {
-    // TODO: Implement chat saving logic here
-    console.log("Chat saved");
+    const isConfirmed = window.confirm("Do you want to save the current chat?");
+    if (isConfirmed) {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const filename = `Chat_${timestamp}.txt`;
+
+      console.log(`Saving chat to ${filename}`);
+      console.log(chatHistory);
+
+      setChatHistory("");
+
+      toast({
+        title: "Chat saved.",
+        description: `Your chat has been saved as ${filename}.`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleOpenHistory = () => {
