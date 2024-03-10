@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import ChatHistoryModal from "../components/ChatHistoryModal";
 
 const Index = () => {
+  const avatarInputRef = useRef(null);
+  const [avatarUrl, setAvatarUrl] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
@@ -48,6 +50,14 @@ const Index = () => {
     setChatHistoryModalOpen(true);
   };
 
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarUrl(imageUrl);
+    }
+  };
+
   return (
     <VStack spacing="1%" w="100%" h="100vh" p="1%" bg="gray.100">
       <HStack spacing="1%" w="100%" h="95%">
@@ -83,11 +93,13 @@ const Index = () => {
 
         {/* Window #2 (Avatar Display) */}
         <VStack w="42%" h="100%" p="3" bg="white" spacing="3">
-          <Box w="100%" h="90%" bg="gray.50" p="3">
-            {/* Avatar display area */}
+          <Box w="100%" h="90%" bg="gray.50" p="3" overflowY="auto">
+            {}
+            {avatarUrl && <img src={avatarUrl} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
           </Box>
           <HStack w="100%" justifyContent="space-between">
-            <Button w="32%">
+            <input type="file" ref={avatarInputRef} style={{ display: "none" }} accept="image/*" onChange={handleAvatarChange} />
+            <Button w="32%" onClick={() => avatarInputRef.current.click()}>
               <FaRobot />
             </Button>
             <Button w="32%">
