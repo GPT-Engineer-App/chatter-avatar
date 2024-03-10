@@ -39,7 +39,10 @@ const Index = () => {
     }
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [isChatHistoryModalOpen, setChatHistoryModalOpen] = useState(false);
+  const mockSavedChats = ["Chat_2024-03-10_12-00-00.txt", "Chat_2024-03-10_14-00-00.txt", "Chat_2024-03-10_16-00-00.txt"];
+  const filteredChats = searchTerm ? mockSavedChats.filter((chat) => chat.toLowerCase().includes(searchTerm.toLowerCase())) : mockSavedChats;
 
   const handleOpenHistory = () => {
     setChatHistoryModalOpen(true);
@@ -98,7 +101,7 @@ const Index = () => {
       </HStack>
 
       {/* Chat History Modal */}
-      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} />
+      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} chatHistoryList={filteredChats} searchTerm={searchTerm} onSearchChange={setSearchTerm} />
     </VStack>
   );
 };
