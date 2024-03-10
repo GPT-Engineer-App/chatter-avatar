@@ -1,8 +1,10 @@
 import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const Index = () => {
+  const fileInputRef = useRef(null);
+  const [avatarFile, setAvatarFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [savedChats, setSavedChats] = useState([]);
@@ -76,8 +78,9 @@ const Index = () => {
 
         {/* Window #2 (Avatar Display) */}
         <VStack w="42%" h="100%" p="3" bg="white" spacing="3">
-          <Box w="100%" h="90%" bg="gray.50" p="3">
-            {/* Avatar display area */}
+          <Box w="100%" h="90%" bg="gray.50" p="3" display="flex" alignItems="center" justifyContent="center">
+            {}
+            {avatarFile && (avatarFile.type.startsWith("image/") ? <img src={URL.createObjectURL(avatarFile)} alt="Avatar" style={{ maxWidth: "100%", maxHeight: "100%" }} /> : <video src={URL.createObjectURL(avatarFile)} alt="Avatar" style={{ maxWidth: "100%", maxHeight: "100%" }} autoPlay loop />)}
           </Box>
           <HStack w="100%" justifyContent="space-between">
             <Button w="32%">
@@ -86,8 +89,19 @@ const Index = () => {
             <Button w="32%">
               <FaMicrophone />
             </Button>
-            <Button w="32%">
+            <Button w="32%" onClick={() => fileInputRef.current.click()}>
               <FaPlusCircle />
+              <input
+                ref={fileInputRef}
+                type="file"
+                hidden
+                accept="image/*,video/*"
+                onChange={(e) => {
+                  if (e.target.files[0]) {
+                    setAvatarFile(e.target.files[0]);
+                  }
+                }}
+              />
             </Button>
           </HStack>
         </VStack>
