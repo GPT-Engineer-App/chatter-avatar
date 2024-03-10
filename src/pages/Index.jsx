@@ -44,31 +44,8 @@ const Index = () => {
   const mockSavedChats = ["Chat_2024-03-10_12-00-00.txt", "Chat_2024-03-10_14-00-00.txt", "Chat_2024-03-10_16-00-00.txt"];
   const filteredChats = searchTerm ? mockSavedChats.filter((chat) => chat.toLowerCase().includes(searchTerm.toLowerCase())) : mockSavedChats;
 
-  const handleOpenHistory = async () => {
-    try {
-      const fileHandles = await window.showOpenFilePicker({
-        types: [
-          {
-            description: "Text Files",
-            accept: {
-              "text/plain": [".txt"],
-            },
-          },
-        ],
-        multiple: true,
-      });
-
-      console.log(fileHandles);
-    } catch (error) {
-      console.error("Error opening file picker:", error);
-      toast({
-        title: "Error opening file explorer.",
-        description: "There was an issue opening the file explorer.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
+  const handleOpenHistory = () => {
+    setChatHistoryModalOpen(true);
   };
 
   return (
@@ -122,7 +99,7 @@ const Index = () => {
           </HStack>
         </VStack>
       </HStack>
-      // Removed the ChatHistoryModal as it is no longer needed.
+      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} chatHistoryList={filteredChats} searchTerm={searchTerm} onSearchChange={setSearchTerm} />
     </VStack>
   );
 };
