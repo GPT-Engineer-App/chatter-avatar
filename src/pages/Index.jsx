@@ -98,7 +98,7 @@ const Index = () => {
             <Button w="49%" onClick={handleSaveChat}>
               New Chat
             </Button>
-            <Button w="49%" onClick={handleOpenHistory}>
+            <Button w="49%" onClick={() => handleOpenHistory()}>
               History
             </Button>
           </HStack>
