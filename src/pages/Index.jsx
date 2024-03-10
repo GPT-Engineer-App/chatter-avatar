@@ -1,8 +1,9 @@
-import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
+import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
 import { useState } from "react";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
@@ -101,7 +102,11 @@ const Index = () => {
         <ModalContent>
           <ModalHeader>Chat History</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{/* Chat history list */}</ModalBody>
+          <ModalBody>
+            <Input placeholder="Search saved chats..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            {}
+            <Box mt="4">{searchQuery === "" ? <Text>Type above to search saved chats</Text> : <Text>Search results for "{searchQuery}"</Text>}</Box>
+          </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
