@@ -5,10 +5,14 @@ import { useState } from "react";
 const Index = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chatHistory, setChatHistory] = useState("");
+  const [currentMessage, setCurrentMessage] = useState("");
 
-  const handleSendMessage = () => {
-    // TODO: Implement chat message sending logic here
-    console.log("Message sent");
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (currentMessage.trim() !== "") {
+      setChatHistory((prevHistory) => `${prevHistory}\n${currentMessage}`);
+      setCurrentMessage("");
+    }
   };
 
   const handleSaveChat = () => {
@@ -27,12 +31,22 @@ const Index = () => {
         {/* Window #1 (Chat Interface) */}
         <VStack w="57%" h="100%" p="3" bg="white" spacing="3" justifyContent="space-between">
           <Box w="100%" h="90%" bg="gray.50" p="3" overflowY="auto">
-            {/* Chat history display */}
-            {chatHistory}
+            {}
+            <pre>{chatHistory}</pre>
           </Box>
           <HStack w="100%">
-            <Input placeholder="Type your message here..." flex="1" />
-            <Button onClick={handleSendMessage}>Send</Button>
+            <Input
+              placeholder="Type your message here..."
+              flex="1"
+              value={currentMessage}
+              onChange={(e) => setCurrentMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSendMessage(e);
+                }
+              }}
+            />
+            <Button onClick={(e) => handleSendMessage(e)}>Send</Button>
           </HStack>
           <HStack w="100%" justifyContent="space-between">
             <Button w="49%" onClick={handleSaveChat}>
