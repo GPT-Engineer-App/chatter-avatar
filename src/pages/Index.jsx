@@ -5,6 +5,7 @@ import { useState } from "react";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [savedChats, setSavedChats] = useState([]);
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
 
@@ -21,17 +22,13 @@ const Index = () => {
   const handleSaveChat = () => {
     const isConfirmed = window.confirm("Do you want to save the current chat?");
     if (isConfirmed) {
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const filename = `Chat_${timestamp}.txt`;
-
-      console.log(`Saving chat to ${filename}`);
-      console.log(chatHistory);
-
+      setSavedChats((prevChats) => [...prevChats, { content: chatHistory, timestamp: new Date().toISOString() }]);
       setChatHistory("");
+      onClose();
 
       toast({
         title: "Chat saved.",
-        description: `Your chat has been saved as ${filename}.`,
+        description: "Your chat has been saved.",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -103,9 +100,18 @@ const Index = () => {
           <ModalHeader>Chat History</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input placeholder="Search saved chats..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-            {}
-            <Box mt="4">{searchQuery === "" ? <Text>Type above to search saved chats</Text> : <Text>Search results for "{searchQuery}"</Text>}</Box>
+            {savedChats.length === 0 ? (
+              <Text>No saved chats.</Text>
+            ) : (
+              <VStack spacing={4}>
+                {savedChats.map((chat, index) => (
+                  <Box key={index} p={3} shadow="md" borderWidth="1px">
+                    <Text fontWeight="bold">Chat from {new Date(chat.timestamp).toLocaleString()}</Text>
+                    <Text mt={2}>{chat.content}</Text>
+                  </Box>
+                ))}
+              </VStack>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
