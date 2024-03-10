@@ -1,9 +1,9 @@
-import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text } from "@chakra-ui/react";
+import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ChatHistoryModal from "../components/ChatHistoryModal";
 
 const Index = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
@@ -39,9 +39,10 @@ const Index = () => {
     }
   };
 
+  const [isChatHistoryModalOpen, setChatHistoryModalOpen] = useState(false);
+
   const handleOpenHistory = () => {
-    // TODO: Implement chat history retrieval logic here
-    onOpen();
+    setChatHistoryModalOpen(true);
   };
 
   return (
@@ -97,23 +98,7 @@ const Index = () => {
       </HStack>
 
       {/* Chat History Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Chat History</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input placeholder="Search saved chats..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-            {}
-            <Box mt="4">{searchQuery === "" ? <Text>Type above to search saved chats</Text> : <Text>Search results for "{searchQuery}"</Text>}</Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} />
     </VStack>
   );
 };
