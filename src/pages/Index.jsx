@@ -1,13 +1,10 @@
-import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Text } from "@chakra-ui/react";
+import { Box, VStack, HStack, Input, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
 import { FaMicrophone, FaRobot, FaArchive, FaPlusCircle } from "react-icons/fa";
 import { useState, useRef } from "react";
+import ChatHistoryModal from "../components/ChatHistoryModal";
 
 const Index = () => {
-  const fileInputRef = useRef(null);
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [savedChats, setSavedChats] = useState([]);
   const [chatHistory, setChatHistory] = useState("");
   const [currentMessage, setCurrentMessage] = useState("");
 
@@ -24,13 +21,17 @@ const Index = () => {
   const handleSaveChat = () => {
     const isConfirmed = window.confirm("Do you want to save the current chat?");
     if (isConfirmed) {
-      setSavedChats((prevChats) => [...prevChats, { content: chatHistory, timestamp: new Date().toISOString() }]);
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const filename = `Chat_${timestamp}.txt`;
+
+      console.log(`Saving chat to ${filename}`);
+      console.log(chatHistory);
+
       setChatHistory("");
-      onClose();
 
       toast({
         title: "Chat saved.",
-        description: "Your chat has been saved.",
+        description: `Your chat has been saved as ${filename}.`,
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -38,9 +39,13 @@ const Index = () => {
     }
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isChatHistoryModalOpen, setChatHistoryModalOpen] = useState(false);
+  const mockSavedChats = ["Chat_2024-03-10_12-00-00.txt", "Chat_2024-03-10_14-00-00.txt", "Chat_2024-03-10_16-00-00.txt"];
+  const filteredChats = searchTerm ? mockSavedChats.filter((chat) => chat.toLowerCase().includes(searchTerm.toLowerCase())) : mockSavedChats;
+
   const handleOpenHistory = () => {
-    // TODO: Implement chat history retrieval logic here
-    onOpen();
+    setChatHistoryModalOpen(true);
   };
 
   return (
@@ -78,9 +83,8 @@ const Index = () => {
 
         {/* Window #2 (Avatar Display) */}
         <VStack w="42%" h="100%" p="3" bg="white" spacing="3">
-          <Box w="100%" h="90%" bg="gray.50" p="3" display="flex" alignItems="center" justifyContent="center">
-            {}
-            {avatarFile && (avatarFile.type.startsWith("image/") ? <img src={URL.createObjectURL(avatarFile)} alt="Avatar" style={{ maxWidth: "100%", maxHeight: "100%" }} /> : <video src={URL.createObjectURL(avatarFile)} alt="Avatar" style={{ maxWidth: "100%", maxHeight: "100%" }} autoPlay loop />)}
+          <Box w="100%" h="90%" bg="gray.50" p="3">
+            {/* Avatar display area */}
           </Box>
           <HStack w="100%" justifyContent="space-between">
             <Button w="32%">
@@ -89,51 +93,13 @@ const Index = () => {
             <Button w="32%">
               <FaMicrophone />
             </Button>
-            <Button w="32%" onClick={() => fileInputRef.current.click()}>
+            <Button w="32%">
               <FaPlusCircle />
-              <input
-                ref={fileInputRef}
-                type="file"
-                hidden
-                accept="image/*,video/*"
-                onChange={(e) => {
-                  if (e.target.files[0]) {
-                    setAvatarFile(e.target.files[0]);
-                  }
-                }}
-              />
             </Button>
           </HStack>
         </VStack>
       </HStack>
-
-      {/* Chat History Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Chat History</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {savedChats.length === 0 ? (
-              <Text>No saved chats.</Text>
-            ) : (
-              <VStack spacing={4}>
-                {savedChats.map((chat, index) => (
-                  <Box key={index} p={3} shadow="md" borderWidth="1px">
-                    <Text fontWeight="bold">Chat from {new Date(chat.timestamp).toLocaleString()}</Text>
-                    <Text mt={2}>{chat.content}</Text>
-                  </Box>
-                ))}
-              </VStack>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ChatHistoryModal isOpen={isChatHistoryModalOpen} onClose={() => setChatHistoryModalOpen(false)} chatHistoryList={filteredChats} searchTerm={searchTerm} onSearchChange={setSearchTerm} />
     </VStack>
   );
 };
